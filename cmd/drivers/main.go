@@ -9,21 +9,17 @@ import (
 	"time"
 
 	"github.com/go-kit/kit/log"
+	drivers "github.com/konjoot/drivers-go-kit/src/drivers"
 )
 
 func main() {
 
-	var (
-		httpAddr = flag.String("http.addr", ":8080", "HTTP listen address")
-	)
+	httpAddr := flag.String("http.addr", ":8080", "HTTP listen address")
 	flag.Parse()
 
-	var logger log.Logger
-	{
-		logger = log.NewLogfmtLogger(os.Stderr)
-		logger = log.With(logger, "ts", log.DefaultTimestampUTC)
-		logger = log.With(logger, "caller", log.DefaultCaller)
-	}
+	logger := log.NewLogfmtLogger(os.Stderr)
+	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
+	logger = log.With(logger, "caller", log.DefaultCaller)
 
 	srv := &http.Server{
 		Addr:    *httpAddr,
