@@ -23,8 +23,13 @@ func main() {
 		defaultDbURL = "postgres://drivers@localhost/drivers_dev?sslmode=disable"
 	}
 
+	defaultPort := os.Getenv("PORT")
+	if defaultPort == "" {
+		defaultPort = "8080"
+	}
+
 	httpAddr := flag.String("http.addr",
-		":8080",
+		":"+defaultPort,
 		"HTTP listen address",
 	)
 
