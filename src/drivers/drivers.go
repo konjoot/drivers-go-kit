@@ -26,7 +26,7 @@ func New(logger log.Logger, db store.DriversStore) http.Handler {
 		}
 	)
 
-	router := mux.NewRouter()
+	router := mux.NewRouter().PathPrefix("/api/").Subrouter()
 	router.Methods("POST").Path("/import").Handler(httptransport.NewServer(
 		logRecoverMiddleware(logger)(service.MakeDriversImportEndpoint(svc)),
 		service.DecodeDriversImportRequest,

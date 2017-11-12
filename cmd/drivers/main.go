@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"time"
 
 	_ "github.com/lib/pq"
@@ -83,9 +84,14 @@ func main() {
 		os.Exit(1)
 	}
 
+	handler := &server{
+		assets: http.FileServer(http.Dir("./build")),
+		api:    drivers.New(logger, dStore),
+	}
+
 	srv := &http.Server{
 		Addr:    *httpAddr,
-		Handler: drivers.New(logger, dStore),
+		Handler: handler,
 	}
 
 	errs := make(chan error, 1)
@@ -114,4 +120,18 @@ func main() {
 	logger.Log("message", "service is gracefully stopped")
 
 	os.Exit(exitCode)
+}
+
+type server struct {
+	assets http.Handler
+	api    http.Handler
+}
+
+func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if strings.HasPrefix(r.URL.Path, "/api/") {
+		s.api.ServeHTTP(w, r)
+		return
+	}
+
+	s.assets.ServeHTTP(w, r)
 }
