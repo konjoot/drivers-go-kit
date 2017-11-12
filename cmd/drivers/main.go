@@ -33,7 +33,6 @@ func main() {
 	flag.Parse()
 
 	logger := log.NewLogfmtLogger(os.Stderr)
-	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
 
 	db, err := sql.Open("postgres", *dbURL)
 	if err != nil {
