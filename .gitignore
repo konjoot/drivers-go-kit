@@ -12,3 +12,8 @@
 
 # Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
 .glide/
+
+# Ignore vendor folder
+vendor/
+# But not vendor/vendor.json, it needed for Heroku deployments
+!vendor/vendor.json
