@@ -22,20 +22,19 @@ func New(logger log.Logger, db store.DriversStore) http.Handler {
 	var (
 		svc     = service.NewDriversService(db)
 		options = []httptransport.ServerOption{
-			httptransport.ServerErrorLogger(logger),
 			httptransport.ServerErrorEncoder(encodeError),
 		}
 	)
 
 	router := mux.NewRouter()
 	router.Methods("POST").Path("/import").Handler(httptransport.NewServer(
-		service.MakeDriversImportEndpoint(svc),
+		logRecoverMiddleware(logger)(service.MakeDriversImportEndpoint(svc)),
 		service.DecodeDriversImportRequest,
 		encodeResponse,
 		options...,
 	))
 	router.Methods("GET").Path("/driver/{id}").Handler(httptransport.NewServer(
-		service.MakeDriversGetByIDEndpoint(svc),
+		logRecoverMiddleware(logger)(service.MakeDriversGetByIDEndpoint(svc)),
 		service.DecodeDriversGetByIDRequest,
 		encodeResponse,
 		options...,
@@ -43,7 +42,10 @@ func New(logger log.Logger, db store.DriversStore) http.Handler {
 	router.NotFoundHandler = notFoundHandler{}
 	router.MethodNotAllowedHandler = methodNotAllowedHandler{}
 
-	return router
+	handler := http.Handler(router)
+	handler = &requestIDMiddleware{router}
+
+	return handler
 }
 
 func encodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
