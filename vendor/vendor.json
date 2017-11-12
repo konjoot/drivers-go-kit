@@ -1,6 +1,8 @@
 {
 	"comment": "",
 	"ignore": "test",
+	"heroku.goVersion": "go1.9.2",
+	"heroku.install": "./cmd/drivers",
 	"package": [
 		{
 			"checksumSHA1": "0x6tKraaJRo//YVEB2FotP2Mhww=",
