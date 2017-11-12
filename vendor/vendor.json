@@ -1,10 +1,12 @@
 {
 	"comment": "",
-	"ignore": "test",
 	"heroku": {
 		"goVersion": "go1.9.2",
-		"install": ["./cmd/drivers"]
+		"install": [
+			"./cmd/drivers"
+		]
 	},
+	"ignore": "test",
 	"package": [
 		{
 			"checksumSHA1": "0x6tKraaJRo//YVEB2FotP2Mhww=",
@@ -53,6 +55,24 @@
 			"path": "github.com/lib/pq/oid",
 			"revision": "b609790bd85edf8e9ab7e0f8912750a786177bcf",
 			"revisionTime": "2017-10-22T19:20:43Z"
+		},
+		{
+			"checksumSHA1": "96f0yPlIe26IrvrTF0JbUcXybGU=",
+			"path": "github.com/rubenv/sql-migrate",
+			"revision": "27ebce5b74e63a71c82d93a37f5ce0a8e1e42714",
+			"revisionTime": "2017-11-08T10:23:22Z"
+		},
+		{
+			"checksumSHA1": "bkwylqn8c7IaoM95SFrAIECmZX0=",
+			"path": "github.com/rubenv/sql-migrate/sqlparse",
+			"revision": "27ebce5b74e63a71c82d93a37f5ce0a8e1e42714",
+			"revisionTime": "2017-11-08T10:23:22Z"
+		},
+		{
+			"checksumSHA1": "xunNOgG8P6Xh4SM+LPQ1zMDXa8Q=",
+			"path": "gopkg.in/gorp.v1",
+			"revision": "c87af80f3cc5036b55b83d77171e156791085e2e",
+			"revisionTime": "2015-02-04T08:55:30Z"
 		}
 	],
 	"rootPath": "github.com/konjoot/drivers-go-kit"

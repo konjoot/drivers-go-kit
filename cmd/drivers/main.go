@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"flag"
+	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -14,6 +15,7 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/konjoot/drivers-go-kit/src/drivers"
 	store "github.com/konjoot/drivers-go-kit/src/drivers/datastore"
+	migrate "github.com/rubenv/sql-migrate"
 )
 
 func main() {
@@ -32,7 +34,6 @@ func main() {
 		":"+defaultPort,
 		"HTTP listen address",
 	)
-
 	dbURL := flag.String("db.url",
 		defaultDbURL,
 		"DB connection URL",
@@ -47,7 +48,7 @@ func main() {
 
 	db, err := sql.Open("postgres", *dbURL)
 	if err != nil {
-		logger.Log("func", "sql.Open", "error", err)
+		logger.Log("func", "sql.Open", "err", err)
 		os.Exit(1)
 	}
 	defer db.Close()
@@ -56,13 +57,29 @@ func main() {
 	db.SetMaxIdleConns(*dbPoolSize)
 
 	if err = db.Ping(); err != nil {
-		logger.Log("func", "db.Ping", "error", err)
+		logger.Log("func", "db.Ping", "err", err)
 		os.Exit(1)
+	}
+
+	migrate.SetTable("migrations")
+	migrations := &migrate.FileMigrationSource{
+		Dir: "./src/drivers/migrations",
+	}
+
+	n, err := migrate.ExecMax(db, "postgres", migrations, migrate.Up, 0)
+	if err != nil {
+		logger.Log("func", "migrate.ExecMax", "err", err)
+		os.Exit(1)
+	}
+	if n == 1 {
+		logger.Log("message", fmt.Sprintf("%d migration applied", n))
+	} else {
+		logger.Log("message", fmt.Sprintf("%d migrations applied", n))
 	}
 
 	dStore, err := store.NewDriversStore(db)
 	if err != nil {
-		logger.Log("func", "store.NewDriversStore", "error", err)
+		logger.Log("func", "store.NewDriversStore", "err", err)
 		os.Exit(1)
 	}
 
@@ -84,14 +101,14 @@ func main() {
 	select {
 	case <-stop:
 	case err = <-errs:
-		logger.Log("func", "srv.ListenAndServe", "error", err)
+		logger.Log("func", "srv.ListenAndServe", "err", err)
 		exitCode = 1
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err = srv.Shutdown(ctx); err != nil {
-		logger.Log("func", "srv.Shutdown", "error", err)
+		logger.Log("func", "srv.Shutdown", "err", err)
 	}
 
 	logger.Log("message", "service is gracefully stopped")
