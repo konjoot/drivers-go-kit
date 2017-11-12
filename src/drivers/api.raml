@@ -1,0 +1,35 @@
+#%RAML 1.0
+---
+title: Drivers
+baseUri: https://desolate-basin-87139.herokuapp.com/api
+
+/import:
+  post:
+    description: Import a batch of drivers.
+    body:
+      application/json:
+        example: |
+          [{
+            "id": 1,
+            "name": "John Doe",
+            "license_number": "11-222-33"
+          }]
+    responses:
+      200:
+        body:
+          application/json:
+            example: {}
+/driver/{id}:
+  get:
+    description: Get a driver by ID.
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "id":1,
+                  "name": "JohnDoe",
+                  "license_number": "11-222-33"
+                }
+
