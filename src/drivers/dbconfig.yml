@@ -1,0 +1,11 @@
+development:
+    dialect: postgres
+    datasource: dbname=drivers_dev sslmode=disable
+    dir: src/drivers/migrations
+    table: migrations
+
+production:
+    dialect: postgres
+    datasource: dbname=drivers sslmode=disable
+    dir: src/drivers/migrations
+    table: migrations
