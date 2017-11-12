@@ -22,14 +22,14 @@ baseUri: https://desolate-basin-87139.herokuapp.com/api
 /driver/{id}:
   get:
     description: Get a driver by ID.
-      responses:
-        200:
-          body:
-            application/json:
-              example: |
-                {
-                  "id":1,
-                  "name": "JohnDoe",
-                  "license_number": "11-222-33"
-                }
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "id":1,
+                "name": "JohnDoe",
+                "license_number": "11-222-33"
+              }
 
