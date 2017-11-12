@@ -18,12 +18,18 @@ import (
 
 func main() {
 
+	defaultDbURL := os.Getenv("DATABASE_URL")
+	if defaultDbURL == "" {
+		defaultDbURL = "postgres://drivers@localhost/drivers_dev?sslmode=disable"
+	}
+
 	httpAddr := flag.String("http.addr",
 		":8080",
 		"HTTP listen address",
 	)
+
 	dbURL := flag.String("db.url",
-		"postgres://drivers@localhost/drivers_dev?sslmode=disable",
+		defaultDbURL,
 		"DB connection URL",
 	)
 	dbPoolSize := flag.Int("db.pool_size",
