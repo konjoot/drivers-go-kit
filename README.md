@@ -4,6 +4,7 @@ This is a go-kit powered micro-service, called Drivers. It serves REST-like API 
 ![api-console](api-console.gif)
 
 API documentation allows you to easily play with the Drivers API in your browser.
+API itself is available at https://desolate-basin-87139.herokuapp.com/api/.
 
 # Requirements
 * Go `>=1.8` (because of new context aware methods in database/sql pkg)
