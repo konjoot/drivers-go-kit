@@ -6,7 +6,7 @@ This is a go-kit powered micro-service, called Drivers. It serves REST-like API 
 API documentation allows you to easily play with the Drivers API in your browser.
 
 # Requirements
-* Go `>=1.9` (because of new context aware methods in database/sql pkg)
+* Go `>=1.8` (because of new context aware methods in database/sql pkg)
 * PostgreSQL `>=9.5` (because of UPSERT)
 
 # Installation
