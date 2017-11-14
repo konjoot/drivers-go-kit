@@ -9,20 +9,28 @@ import (
 	"github.com/go-kit/kit/log"
 )
 
-const RequestIDName = "X-Request-ID"
+// ctxKey type is needed to avoid
+// key collisions in context
+type ctxKey string
 
+const (
+	requestIDName ctxKey = "X-Request-ID"
+)
+
+// logRecoverMiddleware wraps endpoints to provide logging of errors
+// and panic recovery
 func logRecoverMiddleware(logger log.Logger) endpoint.Middleware {
 	return func(next endpoint.Endpoint) endpoint.Endpoint {
 		return func(ctx context.Context, request interface{}) (out interface{}, err error) {
 			defer func() {
 				if rec := recover(); rec != nil {
-					logger.Log("request_id", ctx.Value(RequestIDName), "panic", rec)
+					logger.Log("request_id", ctx.Value(requestIDName), "panic", rec)
 					err = fmt.Errorf("%s", rec)
 				}
 			}()
 			out, err = next(ctx, request)
 			if err != nil {
-				logger.Log("request_id", ctx.Value(RequestIDName), "err", err)
+				logger.Log("request_id", ctx.Value(requestIDName), "err", err)
 			}
 
 			return out, err
@@ -30,6 +38,10 @@ func logRecoverMiddleware(logger log.Logger) endpoint.Middleware {
 	}
 }
 
+// requestIDMiddleware decorates http.Handler
+// get X-Request-ID (provided by Heroku)
+// from request Headers and
+// stores it into request's context
 type requestIDMiddleware struct {
 	srv http.Handler
 }
@@ -37,8 +49,8 @@ type requestIDMiddleware struct {
 func (rm *requestIDMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	r = r.WithContext(context.WithValue(
 		r.Context(),
-		RequestIDName,
-		r.Header.Get(RequestIDName),
+		requestIDName,
+		r.Header.Get(string(requestIDName)),
 	))
 
 	rm.srv.ServeHTTP(w, r)

@@ -12,12 +12,14 @@ import (
 	"github.com/lib/pq"
 )
 
+// Plain errors
 var (
 	ErrDriverNotFound = errors.New("driver is not found")
 	ErrEmptySet       = errors.New("empty set")
 	ErrZeroID         = errors.New("invalid id; should be greater then 0")
 )
 
+// Templates for errors with formatting
 var (
 	ErrInvalidLengthTempl           = "invalid length; field %s should be from %d to %d UTF-8 symbols, but not %d"
 	ErrInvalidFormatTempl           = "invalid format; %s field should match %s, but was %s"
@@ -34,14 +36,17 @@ type DriversService interface {
 	GetByID(context.Context, uint64) (*store.Driver, error)
 }
 
+// NewDriversService is a constructor of DriversService
 func NewDriversService(db store.DriversStore) DriversService {
 	return &driversService{store: db}
 }
 
+// driversService is an implementation of DriversService interface
 type driversService struct {
 	store store.DriversStore
 }
 
+// Import provides main logic of insertion of an array of drivers
 func (drs *driversService) Import(ctx context.Context, drivers []*store.Driver) error {
 
 	driversLength := len(drivers)
@@ -68,6 +73,7 @@ func (drs *driversService) Import(ctx context.Context, drivers []*store.Driver) 
 	return nil
 }
 
+// GetByID provides main logic of getting a driver by id
 func (drs *driversService) GetByID(ctx context.Context, id uint64) (*store.Driver, error) {
 	if id == 0 {
 		return nil, BadRequest(ErrZeroID)
@@ -107,23 +113,28 @@ func validateDriver(driver *store.Driver) error {
 	return nil
 }
 
-func StatusError(status int, err error) *statusError {
+// StatusError is a general constructor of *statusError
+func StatusError(status int, err error) error {
 	return &statusError{status, err}
 }
 
-func BadRequest(err error) *statusError {
+// BadRequest is a shortcut for StatusError(http.StatusBadRequest, err)
+func BadRequest(err error) error {
 	return &statusError{http.StatusBadRequest, err}
 }
 
-func NotFound(err error) *statusError {
+// NotFound is a shortcut for StatusError(http.StatusNotFound, err)
+func NotFound(err error) error {
 	return &statusError{http.StatusNotFound, err}
 }
 
-func Conflict(err error) *statusError {
+// Conflict is a shortcut for StatusError(http.StatusConflict, err)
+func Conflict(err error) error {
 	return &statusError{http.StatusConflict, err}
 }
 
-func InternalServerError(err error) *statusError {
+// InternalServerError is a shortcut for StatusError(http.StatusInternalServerError, err)
+func InternalServerError(err error) error {
 	return &statusError{http.StatusInternalServerError, err}
 }
 

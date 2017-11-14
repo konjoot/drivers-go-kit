@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// DriversStore is an interface for datastore of Drivers
 type DriversStore interface {
 	UpsertBatch(context.Context, []*Driver) error
 	GetByID(context.Context, uint64) (*Driver, error)
@@ -20,17 +21,21 @@ type Driver struct {
 	LicenseNumber string `json:"license_number"`
 }
 
-func NewDriversStore(db *sql.DB) (*driversStore, error) {
+// NewDriversStore is a constructor for DriversStore
+func NewDriversStore(db *sql.DB) (DriversStore, error) {
 	if db == nil {
 		return nil, errors.New("*sql.DB is required")
 	}
 	return &driversStore{db: db}, nil
 }
 
+// driversStore is an implementation of DriversStore
 type driversStore struct {
 	db *sql.DB
 }
 
+// UpsertBatch prepares sql-statement with batch of drivers and applies it,
+// does upsert for conflicting ids
 func (ds *driversStore) UpsertBatch(ctx context.Context, drivers []*Driver) error {
 
 	var (
@@ -52,6 +57,7 @@ func (ds *driversStore) UpsertBatch(ctx context.Context, drivers []*Driver) erro
 	return err
 }
 
+// GetByID selects a driver from datastore by id
 func (ds *driversStore) GetByID(ctx context.Context, id uint64) (*Driver, error) {
 	driver := &Driver{ID: id}
 	err := ds.db.QueryRowContext(ctx,

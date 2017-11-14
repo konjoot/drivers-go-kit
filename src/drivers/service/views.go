@@ -15,6 +15,7 @@ type driversGetByIDRequest struct {
 	ID uint64 `json:"id"`
 }
 
+// DecodeDriversGetByIDRequest is a request decoder for GetByID endpoint
 func DecodeDriversGetByIDRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	vars := mux.Vars(r)
 	idString, ok := vars["id"]
@@ -33,6 +34,7 @@ type driversImportRequest struct {
 	Drivers []*store.Driver
 }
 
+// DecodeDriversImportRequest is a request decoder for Import endpoint
 func DecodeDriversImportRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	var request driversImportRequest
 	if err := json.NewDecoder(r.Body).Decode(&request.Drivers); err != nil {

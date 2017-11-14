@@ -13,11 +13,13 @@ import (
 	"github.com/konjoot/drivers-go-kit/src/drivers/service"
 )
 
+// Router related errors
 var (
 	ErrHandlerNotFound  = errors.New("handler for the route is not found")
 	ErrMethodNotAllowed = errors.New("method is not allowed")
 )
 
+// New is a main constructor of the Drivers app
 func New(logger log.Logger, db store.DriversStore) http.Handler {
 	var (
 		svc     = service.NewDriversService(db)
