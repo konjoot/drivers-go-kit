@@ -15,7 +15,7 @@ go get -u  github.com/konjoot/drivers-go-kit/...
 ```
 # Usage
 
-Ensure that you are in the app directory
+Ensure that you are in the project's root
 ```
 cd $GOPATH/src/github.com/konjoot/drivers-go-kit/
 ```
@@ -32,7 +32,8 @@ drivers -h
 #    	HTTP listen address (default ":8080")
 ```
 
-Before service launch ensure that you created a user and a database. By default it is user: drivers, database: drivers_dev.
+Before service launch ensure that you created a user and a database. By default it is:
+ `user: drivers`, `database: drivers_dev`.
 
 ```
 createuser drivers -s # create a superuser drivers
@@ -46,11 +47,11 @@ drivers
 ```
 API should be available at http://localhos:8080/api/.
 
-API documentation should be available at http://localhost/.
+API documentation should be available at http://localhost:8080.
 
 # Project goals
 
-* do the code challenge [assignment](challenge.md)
+* do the code [challenge](challenge.md)
 * write a self-instrumented micro-service
 * dive into go-kit
 
