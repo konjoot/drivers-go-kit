@@ -19,11 +19,13 @@ func TestDriversGetByID(t *testing.T) {
 	}
 
 	defer func() {
+		if err := db.Close(); err != nil {
+			t.Error(err)
+		}
 		if err := dropTestDB(dbName); err != nil {
 			t.Error(err)
 		}
 	}()
-	defer db.Close()
 
 	_, err = db.Exec(`
 		INSERT INTO drivers (id, name, license_number)
@@ -105,11 +107,13 @@ func TestDriversUpsertBatch(t *testing.T) {
 	}
 
 	defer func() {
+		if err := db.Close(); err != nil {
+			t.Error(err)
+		}
 		if err := dropTestDB(dbName); err != nil {
 			t.Error(err)
 		}
 	}()
-	defer db.Close()
 
 	dStore, err := store.NewDriversStore(db)
 	if err != nil {
@@ -299,8 +303,8 @@ func TestDriversUpsertBatch(t *testing.T) {
 	err = dStore.UpsertBatch(context.Background(), drivers)
 	t.Log("err =>", err)
 	if e, ok := err.(*pq.Error); ok {
-		t.Log("e.Code =>", "23505")
-		t.Log("e.Constraint =>", "drivers_license_number_key")
+		t.Log("e.Code =>", e.Code)
+		t.Log("e.Constraint =>", e.Constraint)
 		if e.Code != "23505" || e.Constraint != "drivers_license_number_key" {
 			t.Error("Expected e.Code =>", "23505")
 			t.Error("Expected e.Constraint =>", "drivers_license_number_key")
